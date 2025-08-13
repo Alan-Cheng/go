@@ -28,4 +28,10 @@
 
 ### 🎯 學習目標
 
+#### 1. Why is the Bootstrap Node necessary?
+
+---
+
+## Chapter 10: [Programming a Peer-to-Peer DB Sync Algorithm]
+
 ---
