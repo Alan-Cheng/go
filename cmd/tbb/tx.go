@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/spf13/cobra"
-	"tbb/database"
+	"github.com/web3coach/the-blockchain-bar/database"
 	"fmt"
 	"os"
 )
@@ -53,13 +53,13 @@ func txAddCmd() *cobra.Command {
 				os.Exit(1)
 			}
 
-			err = state.Persist()
+			_, err = state.Persist()
 			if err != nil {
 				fmt.Fprintln(os.Stderr, err)
 				os.Exit(1)
 			}
 
-			fmt.Println("TX successfully added to the ledger.")
+			fmt.Println("TX successfully persisted to the ledger.")
 		},
 	}
 
