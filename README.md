@@ -22,6 +22,7 @@
 
 #### 3. 上到雲端
    - {Pending}
+
 ---
 
 ## Chapter 9: [It Takes Two Nodes ToTango]
@@ -33,5 +34,18 @@
 ---
 
 ## Chapter 10: [Programming a Peer-to-Peer DB Sync Algorithm]
+
+### 🎯 學習目標
+
+#### 1. State 加入 lastBlock，用於取得上一個區塊的高度(number)
+   - 指定路徑初始化 DB
+   ```
+   cat /dev/null > .tbb/database/block.db
+   ```
+
+   - 用 migrate 初始化 Hardcode 的資料
+   ```
+   tbb migrate --datadir=.tbb
+   ```
 
 ---
