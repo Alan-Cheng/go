@@ -51,4 +51,11 @@
 #### 2. 加入回傳 Status 的 Endpoint（用於下一步同步 Node 資訊）
    - 修改 Node 結構，啟動時直接建立已知的啟動節點（bootstrap node）
 
+#### 3. 同步演算法初步實作，先以簡單的定期更新方法實現
+   - sync() 使用 time.NewTicker 建立計時器
+   - 透過 ticker 定時發出訊號(Channel)，當接收到 ctx.done() 時中止 ticker
+   - 使用 go sync() 執行 goroutine ，當 HTTP Endpoint 啟動時在背景執行同步任務
+   - 使用CH9. 建立 /node/status Endpoint，透過 fetchNewBlocksAndPeers() 取得各節點的資訊以更新 n.knownPeers
+   - Node.knownPeers 使用 Map 替代　Array
+
 ---
