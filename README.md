@@ -11,13 +11,13 @@
 #### 1. 建立 DB config
    - 指定路徑初始化 DB & 取得 DB 資料
    ```
-   tbb balances list --datadir=C:\home\web3coach\.tbb
+   tbb balances list --datadir=.tbb
    ```
 
 #### 2. 建立 HTTP Endpoint 來操作 Tx
    - 啟動HTTP Endpoint
    ```
-   tbb run --datadir=C:\home\web3coach\.tbb
+   tbb run --datadir=.tbb
    ```
 
 #### 3. 上到雲端
@@ -59,5 +59,6 @@
    - Node.knownPeers 使用 Map 替代　Array
 
 #### 4. 建立 /node/sync Endpoint 接收其他節點的區塊高度查詢請求
+   - 建立 /node/sync?fromBlock={Hash} Endpoint，透過 GetBlockAfter(Hahs, string)([]Block, error) 取得最新的 Block
 
 ---
