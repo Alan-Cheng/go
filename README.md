@@ -48,4 +48,6 @@
    tbb migrate --datadir=.tbb
    ```
 
+#### 2. 加入回傳 Status 的 Endpoint（用於下一步同步 Node 資訊）
+
 ---
