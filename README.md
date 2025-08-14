@@ -61,4 +61,7 @@
 #### 4. 建立 /node/sync Endpoint 接收其他節點的區塊高度查詢請求
    - 建立 /node/sync?fromBlock={Hash} Endpoint，透過 GetBlockAfter(Hahs, string)([]Block, error) 取得最新的 Block
 
+#### 5. 同步業務邏輯下一步：將其他節點取得的最新 Block 持久化到本地資料庫中
+   - comming soon
+
 ---
