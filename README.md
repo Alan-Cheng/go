@@ -49,5 +49,6 @@
    ```
 
 #### 2. 加入回傳 Status 的 Endpoint（用於下一步同步 Node 資訊）
+   - 修改 Node 結構，啟動時直接建立已知的啟動節點（bootstrap node）
 
 ---
