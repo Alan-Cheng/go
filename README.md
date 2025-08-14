@@ -58,4 +58,6 @@
    - 使用CH9. 建立 /node/status Endpoint，透過 fetchNewBlocksAndPeers() 取得各節點的資訊以更新 n.knownPeers
    - Node.knownPeers 使用 Map 替代　Array
 
+#### 4. 建立 /node/sync Endpoint 接收其他節點的區塊高度查詢請求
+
 ---
