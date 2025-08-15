@@ -87,7 +87,14 @@
          Peer '127.0.0.1:8082' was added into KnownPeers
          ```
 
-      5. 觀察各.tbb資料夾內的block.db檔案，應同步為相同內容
+      5. 觀察各.tbb資料夾內的block.db檔案，應同步為相同內容(範例)
+         ```json
+         {"hash":"2705f942c57e9f54cd096162bee43d5e4bbd5555435bf081e5fff26ede9bbff1","block":{"header":{"parent":"46438b2675171b3e40b013218805de961e8d40af7af252fe166b5eb22089d027","number":1,"time":1755093150},"payload":[{"from":"andrej","to":"andrej","value":3,"data":""},{"from":"andrej","to":"andrej","value":700,"data":"reward"}]}}
+         {"hash":"bdfef9839fbac54168fac5dedbf1397aead1c6c2be6be4b137a397f0c95eb4b1","block":{"header":{"parent":"2705f942c57e9f54cd096162bee43d5e4bbd5555435bf081e5fff26ede9bbff1","number":2,"time":1755093150},"payload":[{"from":"andrej","to":"babayaga","value":2000,"data":""},{"from":"andrej","to":"andrej","value":100,"data":"reward"},{"from":"babayaga","to":"andrej","value":1,"data":""},{"from":"babayaga","to":"caesar","value":1000,"data":""},{"from":"babayaga","to":"andrej","value":50,"data":""},{"from":"andrej","to":"andrej","value":600,"data":"reward"}]}}
+         {"hash":"24fc3c6bd9243b6c50958d9b202985fc15a19e606084afc6afc56548d6a350f7","block":{"header":{"parent":"bdfef9839fbac54168fac5dedbf1397aead1c6c2be6be4b137a397f0c95eb4b1","number":3,"time":1755093150},"payload":[{"from":"andrej","to":"andrej","value":24700,"data":"reward"}]}}
+         {"hash":"7b86318b11f6120c7e359147b9b3c4825059e1ebebc4b983a146ff704b41c463","block":{"header":{"parent":"24fc3c6bd9243b6c50958d9b202985fc15a19e606084afc6afc56548d6a350f7","number":4,"time":1755178610},"payload":[{"from":"andrej","to":"babayaga","value":100,"data":""}]}}
+         {"hash":"dfad99f639a95d1a741c2bcba909c68476e2544f40a4d521e97d2ec9c7f0b9e7","block":{"header":{"parent":"7b86318b11f6120c7e359147b9b3c4825059e1ebebc4b983a146ff704b41c463","number":5,"time":1755223632},"payload":[{"from":"andrej","to":"babayaga","value":100,"data":""}]}}
+         ```
 
       6. 透過新增交易的 Endpoint 在0號節點新增一比交易紀錄，45秒後觀察是否自動同步到其餘節點
          ```bash
