@@ -108,5 +108,44 @@
          Persisting new Block to disk:
          {"hash":"dfad99f639a95d1a741c2bcba909c68476e2544f40a4d521e97d2ec9c7f0b9e7","block":{"header":{"parent":"7b86318b11f6120c7e359147b9b3c4825059e1ebebc4b983a146ff704b41c463","number":5,"time":1755223632},"payload":[{"from":"andrej","to":"babayaga","value":100,"data":""}]}}
          ```
-         
+
+## Chapter 11: [The Autonomous Database Brain]
+
+### 🎯 學習目標
+
+#### 1. 本機路徑中加入域名解析
+   - 在 /etc/hosts 加入測試用的 Node Domain
+   ```
+   sudo sh -c 'echo "127.0.0.1 andrej.tbb" >> /etc/hosts && echo "127.0.0.1 babayaga.tbb" >> /etc/hosts && killall -HUP mDNSResponder'
+   ```
+
+   - 目前Sync週期為45秒一次，若在週期內不同Node產生Tx，會發生Fork(分岔的狀況)，block.db會記錄下不同的Blocks
+   ```
+      15:00:00
+   curl -X POST http://andrej.tbb:8080/tx/add \
+   -d '{
+   "from": "andrej",
+   "to": "andrej",
+   "value": 7
+   }'
+   ```
+
+   ```
+      15:00:05
+   curl -X POST http://babayaga.tbb:8081/tx/add \
+   -d '{
+   "from": "babayaga",
+   "to": "babayaga",
+   "value": 2
+   }'
+
+      15:00:10
+   curl -X POST http://babayaga.tbb:8081/tx/add \
+   -d '{
+   "from": "babayaga",
+   "to": "babayaga",
+   "value": 2
+   }'
+   ```
+
 ---
