@@ -121,7 +121,7 @@
 
    - 目前Sync週期為45秒一次，若在週期內不同Node產生Tx，會發生Fork(分岔的狀況)，block.db會記錄下不同的Blocks
    ```
-      15:00:00
+   # 15:00:00
    curl -X POST http://andrej.tbb:8080/tx/add \
    -d '{
    "from": "andrej",
@@ -131,7 +131,7 @@
    ```
 
    ```
-      15:00:05
+   # 15:00:05
    curl -X POST http://babayaga.tbb:8081/tx/add \
    -d '{
    "from": "babayaga",
@@ -139,7 +139,7 @@
    "value": 2
    }'
 
-      15:00:10
+   # 15:00:10
    curl -X POST http://babayaga.tbb:8081/tx/add \
    -d '{
    "from": "babayaga",
