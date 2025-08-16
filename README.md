@@ -165,8 +165,8 @@
       go test -timeout=0 ./node -test.v -test.run ^TestMine$
       ```
 
-         輸出
       ```
+      ＃終端機下列輸出代表成功挖到
       Mined new Block '000000459aa35c64fce85ccd2f277bb35d673cf33699cb687b83580e4b6e18d7' using PoW🎉🎉🎉🎉:
          Height: '0'
          Nonce: '2744821435'
