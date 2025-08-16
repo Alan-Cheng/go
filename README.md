@@ -161,21 +161,21 @@
    - 設計上述演算法，設定n=6並實作測試檔案(./node/miner_test.go)
    
    - 啟動測試，實驗挖礦
-   ```
-   go test -timeout=0 ./node -test.v -test.run ^TestMine$
-   ```
+      ```
+      go test -timeout=0 ./node -test.v -test.run ^TestMine$
+      ```
 
-   輸出
-   ```
-   Mined new Block '000000459aa35c64fce85ccd2f277bb35d673cf33699cb687b83580e4b6e18d7' using PoW🎉🎉🎉🎉:
-        Height: '0'
-        Nonce: '2744821435'
-        Created: '1755359183'
-        Miner: 'andrej'
-        Parent: '0000000000000000000000000000000000000000000000000000000000000000'
+         輸出
+      ```
+      Mined new Block '000000459aa35c64fce85ccd2f277bb35d673cf33699cb687b83580e4b6e18d7' using PoW🎉🎉🎉🎉:
+         Height: '0'
+         Nonce: '2744821435'
+         Created: '1755359183'
+         Miner: 'andrej'
+         Parent: '0000000000000000000000000000000000000000000000000000000000000000'
 
-        Attempt: '1432275'
-        Time: 1.148893875s
-   ```
+         Attempt: '1432275'
+         Time: 1.148893875s
+      ```
 
 ---
