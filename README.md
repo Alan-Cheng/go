@@ -183,6 +183,12 @@
       3. 再試一次啟動多節點並發起多交易
       4. ##### 兩個節點測試可以同步，但同步頻率（秒數）仍然會造成分岔，因為其他節點還沒收到新區塊產出，他自己也產出了區塊
 
-   - 
+   - 建立挖礦獎勵機制的四個步驟
+      1. 在 Block Header 裡面記錄 Miner
+      2. applyBlock()內新增獎勵成功挖礦的邏輯 s.Balances[b.Header.Miner] += BlockReward
+      3. CLI run 新增 flag --miner 來指定 Miner 名稱
+      4. n.minePendingTXs()在建立PendingBlock的時候要帶入Miner
 
+   - 撰寫完整測試
+      - ##### 跳過這章節
 ---
