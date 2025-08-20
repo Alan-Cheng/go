@@ -3,14 +3,13 @@ package node
 import (
 	"context"
 	"fmt"
+	"github.com/web3coach/the-blockchain-bar/database"
 	"net/http"
 	"time"
-
-	"github.com/web3coach/the-blockchain-bar/database"
 )
 
 func (n *Node) sync(ctx context.Context) error {
-	ticker := time.NewTicker(2 * time.Second)
+	ticker := time.NewTicker(45 * time.Second)
 
 	for {
 		select {
@@ -158,7 +157,7 @@ func (n *Node) joinKnownPeers(peer PeerNode) error {
 		return err
 	}
 	if addPeerRes.Error != "" {
-		return fmt.Errorf("%s", addPeerRes.Error)
+		return fmt.Errorf(addPeerRes.Error)
 	}
 
 	knownPeer := n.knownPeers[peer.TcpAddress()]
