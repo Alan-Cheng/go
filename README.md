@@ -200,7 +200,7 @@
    - 用 go-ethereum 專案裡面的 mod 來建立產生公私鑰的方法與CLI工具
 
    - 產出 Address (實際上是keystore檔案，裡面包含加密後的私鑰)
-   
+
    ```
    # 利用自訂的密碼產生keystore檔案
    tbb wallet new-account --datadir=./.crypto
@@ -210,5 +210,7 @@
    # 讀取keystore (自行給keystore裡面的檔案路徑)
    tbb wallet pk-print --keystore=./.crypto/keystore/UTC--2025-08-20T13-41-56.241378000Z--ba2081ce95105590501940242e4c4f576abc4c82
    ```
+
+   - 建立 Publickey, PrivateKey, ecdsaSignature 等結構，且將先前章節使用的 Account 轉為使用 common.Address
 
 ---
