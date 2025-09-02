@@ -10,6 +10,11 @@ const state = {
     node1: null,
     node2: null
   },
+  lastBalance: {
+    node0: null,
+    node1: null,
+    node2: null
+  },
   intervalMs: 2000,
   timer: null
 }
@@ -71,15 +76,38 @@ async function fetchStatus(node) {
   }
 }
 
+async function fetchBalance(node) {
+  const status = state.lastStatus[node.id]
+  if (!status) return
+  const id = node.id
+  const url = `${node.base}/balances/list`
+  try {
+    const res = await fetch(url)
+    if (!res.ok) throw new Error(`${res.status} ${res.statusText}`)
+    const data = await res.json()
+    const bal = data.balances?.[status.account?.toLowerCase()] ?? data.balances?.[status.account]
+    if (bal !== undefined) {
+      const prev = state.lastBalance[id]
+      document.getElementById(`balance-${id}`).textContent = String(bal)
+      if (prev !== null && prev !== bal) {
+        appendLog(id, `balance ${prev} -> ${bal}`)
+      }
+      state.lastBalance[id] = bal
+    }
+  } catch (e) {
+    // it's fine if balance fails; connection status managed by fetchStatus
+  }
+}
+
 function startPolling() {
   if (state.timer) clearInterval(state.timer)
   state.timer = setInterval(() => {
-    nodes.forEach(fetchStatus)
+    nodes.forEach(async (n) => { await fetchStatus(n); await fetchBalance(n) })
   }, state.intervalMs)
 }
 
-document.getElementById('refresh').addEventListener('click', () => {
-  nodes.forEach(fetchStatus)
+document.getElementById('refresh').addEventListener('click', async () => {
+  for (const n of nodes) { await fetchStatus(n); await fetchBalance(n) }
 })
 
 document.getElementById('interval').addEventListener('change', (e) => {
@@ -89,7 +117,7 @@ document.getElementById('interval').addEventListener('change', (e) => {
 })
 
 // initial
-nodes.forEach(fetchStatus)
+nodes.forEach(async (n) => { await fetchStatus(n); await fetchBalance(n) })
 startPolling()
 
 
