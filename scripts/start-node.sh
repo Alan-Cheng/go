@@ -32,9 +32,8 @@ echo "Starting node with miner address: $MINER_ADDRESS"
 # 啟動節點
 exec tbb run \
     --datadir=/root/data \
-    --ip=0.0.0.0 \          # 監聽本地所有網卡
+    --ip=${NODE_HOST:-0.0.0.0} \
     --port=${NODE_PORT:-8080} \
     --miner=$MINER_ADDRESS \
-    --advertise-ip=${NODE_HOST:-node0} \   # 對外廣播的 IP 或 service name
     --bootstrap-ip=${BOOTSTRAP_IP:-node0} \
     --bootstrap-port=${BOOTSTRAP_PORT:-8080}
