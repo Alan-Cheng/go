@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  node0:
+    build: .
+    container_name: tbb-node0
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./data0:/root/data
+    environment:
+      - NODE_HOST=node0
+      - NODE_PORT=8080
+      - BOOTSTRAP_IP=node0
+      - BOOTSTRAP_PORT=8080
+    networks:
+      - tbb-network
+
+  node1:
+    build: .
+    container_name: tbb-node1
+    ports:
+      - "8081:8081"
+    volumes:
+      - ./data1:/root/data
+    environment:
+      - NODE_HOST=node1
+      - NODE_PORT=8081
+      - BOOTSTRAP_IP=node0
+      - BOOTSTRAP_PORT=8080
+    depends_on:
+      - node0
+    networks:
+      - tbb-network
+
+  node2:
+    build: .
+    container_name: tbb-node2
+    ports:
+      - "8082:8082"
+    volumes:
+      - ./data2:/root/data
+    environment:
+      - NODE_HOST=node2
+      - NODE_PORT=8082
+      - BOOTSTRAP_IP=node0
+      - BOOTSTRAP_PORT=8080
+    depends_on:
+      - node0
+    networks:
+      - tbb-network
+
+networks:
+  tbb-network:
+    driver: bridge 
