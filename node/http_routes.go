@@ -36,6 +36,7 @@ type StatusRes struct {
 	KnownPeers map[string]PeerNode `json:"peers_known"`
 	PendingTXs []database.SignedTx `json:"pending_txs"`
 	Account    string              `json:"account"`
+	IsMining   bool                `json:"is_mining"`
 }
 
 type SyncRes struct {
@@ -96,6 +97,7 @@ func statusHandler(w http.ResponseWriter, r *http.Request, node *Node) {
 		KnownPeers: node.knownPeers,
 		PendingTXs: node.getPendingTXsAsArray(),
 		Account:    node.info.Account.Hex(),
+		IsMining:   node.isMining,
 	}
 
 	writeRes(w, res)

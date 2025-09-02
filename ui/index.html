@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TBB Nodes Dashboard</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Blockchain Nodes Dashboard</h1>
+      <div class="controls">
+        <button id="refresh">Refresh Now</button>
+        <label>
+          Interval (s)
+          <input id="interval" type="number" min="1" value="2" />
+        </label>
+      </div>
+    </header>
+
+    <main id="nodes">
+      <section class="node" data-node="node0">
+        <h2>node0 <span class="status" id="status-node0">offline</span></h2>
+        <div class="meta">
+          <div>Account: <span id="account-node0">-</span></div>
+          <div>Block: <span id="block-node0">-</span></div>
+          <div>Mining: <span id="mining-node0">-</span></div>
+        </div>
+        <div class="logs" id="logs-node0"></div>
+      </section>
+
+      <section class="node" data-node="node1">
+        <h2>node1 <span class="status" id="status-node1">offline</span></h2>
+        <div class="meta">
+          <div>Account: <span id="account-node1">-</span></div>
+          <div>Block: <span id="block-node1">-</span></div>
+          <div>Mining: <span id="mining-node1">-</span></div>
+        </div>
+        <div class="logs" id="logs-node1"></div>
+      </section>
+
+      <section class="node" data-node="node2">
+        <h2>node2 <span class="status" id="status-node2">offline</span></h2>
+        <div class="meta">
+          <div>Account: <span id="account-node2">-</span></div>
+          <div>Block: <span id="block-node2">-</span></div>
+          <div>Mining: <span id="mining-node2">-</span></div>
+        </div>
+        <div class="logs" id="logs-node2"></div>
+      </section>
+    </main>
+
+    <script src="/app.js"></script>
+  </body>
+  </html>
+
+
