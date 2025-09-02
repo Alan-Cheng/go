@@ -10,6 +10,11 @@ const state = {
     node1: null,
     node2: null
   },
+  lastOrigin: {
+    node0: null,
+    node1: null,
+    node2: null
+  },
   lastBalance: {
     node0: null,
     node1: null,
@@ -47,6 +52,9 @@ async function fetchStatus(node) {
     document.getElementById(`account-${id}`).textContent = data.account
     document.getElementById(`block-${id}`).textContent = `${data.block_number} (${data.block_hash})`
     document.getElementById(`mining-${id}`).textContent = data.is_mining ? 'yes' : 'no'
+    if (data.last_block_origin) {
+      document.getElementById(`origin-${id}`).textContent = data.last_block_origin
+    }
 
     // Derive log-ish events
     const prev = state.lastStatus[id]
@@ -54,7 +62,8 @@ async function fetchStatus(node) {
       appendLog(id, `connected. block=${data.block_number}, mining=${data.is_mining}`)
     } else {
       if (data.block_number > prev.block_number) {
-        appendLog(id, `new block ${data.block_number} (${data.block_hash})`)
+        const origin = data.last_block_origin || 'unknown'
+        appendLog(id, `new block ${data.block_number} (${data.block_hash}) by ${origin}`)
       }
       if (!!data.is_mining !== !!prev.is_mining) {
         appendLog(id, data.is_mining ? 'mining started' : 'mining stopped')

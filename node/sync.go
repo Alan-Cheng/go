@@ -106,6 +106,7 @@ func (n *Node) syncBlocks(peer PeerNode, status StatusRes) error {
 			return err
 		}
 
+		n.lastBlockOrigin = "synced"
 		n.newSyncedBlocks <- block
 	}
 

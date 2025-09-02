@@ -54,6 +54,7 @@ type Node struct {
 	newSyncedBlocks chan database.Block
 	newPendingTXs   chan database.SignedTx
 	isMining        bool
+	lastBlockOrigin string
 }
 
 func New(dataDir string, ip string, port uint64, acc common.Address, bootstrap PeerNode) *Node {
@@ -69,6 +70,7 @@ func New(dataDir string, ip string, port uint64, acc common.Address, bootstrap P
 		newSyncedBlocks: make(chan database.Block),
 		newPendingTXs:   make(chan database.SignedTx, 10000),
 		isMining:        false,
+		lastBlockOrigin: "",
 	}
 }
 
@@ -194,6 +196,8 @@ func (n *Node) minePendingTXs(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
+
+	n.lastBlockOrigin = "mined"
 
 	return nil
 }

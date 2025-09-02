@@ -37,6 +37,7 @@ type StatusRes struct {
 	PendingTXs []database.SignedTx `json:"pending_txs"`
 	Account    string              `json:"account"`
 	IsMining   bool                `json:"is_mining"`
+	LastBlockOrigin string         `json:"last_block_origin"`
 }
 
 type SyncRes struct {
@@ -98,6 +99,7 @@ func statusHandler(w http.ResponseWriter, r *http.Request, node *Node) {
 		PendingTXs: node.getPendingTXsAsArray(),
 		Account:    node.info.Account.Hex(),
 		IsMining:   node.isMining,
+		LastBlockOrigin: node.lastBlockOrigin,
 	}
 
 	writeRes(w, res)
