@@ -35,6 +35,7 @@ type StatusRes struct {
 	Number     uint64              `json:"block_number"`
 	KnownPeers map[string]PeerNode `json:"peers_known"`
 	PendingTXs []database.SignedTx `json:"pending_txs"`
+	Account    string              `json:"account"`
 }
 
 type SyncRes struct {
@@ -94,6 +95,7 @@ func statusHandler(w http.ResponseWriter, r *http.Request, node *Node) {
 		Number:     node.state.LatestBlock().Header.Number,
 		KnownPeers: node.knownPeers,
 		PendingTXs: node.getPendingTXsAsArray(),
+		Account:    node.info.Account.Hex(),
 	}
 
 	writeRes(w, res)
