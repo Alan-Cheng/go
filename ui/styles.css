@@ -13,5 +13,3 @@ main { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding:
 .meta { display: grid; grid-template-columns: 1fr; gap: 4px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size: 12px; }
 .logs { margin-top: 8px; height: 240px; overflow: auto; background: #00000010; border-radius: 6px; padding: 8px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size: 12px; }
 .log-line { white-space: pre-wrap; margin: 0; }
-
-

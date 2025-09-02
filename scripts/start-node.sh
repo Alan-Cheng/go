@@ -10,6 +10,13 @@ if [ ! -d "/root/data/keystore" ] || [ -z "$(ls -A /root/data/keystore 2>/dev/nu
     exit 1
 fi
 
+# 清空上次的區塊資料庫（如存在）
+DB_PATH="/root/data/database/block.db"
+if [ -f "$DB_PATH" ]; then
+    echo "Clearing blockchain database content: $DB_PATH"
+    > "$DB_PATH"
+fi
+
 echo "Using existing keystore..."
 WALLET_ADDRESS=$(ls /root/data/keystore/ | head -1 | sed 's/.*--//')
 echo "Using wallet address: 0x$WALLET_ADDRESS"
