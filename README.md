@@ -1,216 +1,98 @@
-# The Blockchain Bar - 實作
+# Golang 區塊鏈實作
 
-## 📝 筆記
+| 功能 | 說明 |
+|---------|------|
+| **節點** | 實現P2P網路節點，包含同步用的端點與儲存其他有效節點 |
+| **交易** | 處理加密貨幣交易，包含數位簽章驗證和餘額管理 |
+| **P2P網路** | 建立去中心化網路，節點間自動同步區塊鏈狀態 |
+| **工作量證明** | 挖礦演算法，計算SHA256符合驗證條件之Hash  |
 
----
 
-## Chapter 8: [Transparent Database]
+## ✨ 簡介
 
-### 🎯 學習目標
+- **🔗 P2P網路**: 自動與Bootstrap節點同步並取得其他有效節點
+- **⛏️ 工作量證明**: SHA256挖礦演算法，可設定計算難度
+- **💰 錢包系統**: 使用[go-ethereum](https://github.com/ethereum/go-ethereum)以太坊的Library實作驗證與錢包地址生成
+- **📊 即時同步(待完善)**: 節點間可自動同步區塊，但尚未完善
+  - **TODO**：分叉處理
 
-#### 1. 建立 DB config
-   - 指定路徑初始化 DB & 取得 DB 資料
-   ```
-   tbb balances list --datadir=.tbb
-   ```
+- **🐳 容器部屬**: 可快速啟動DEMO；nginx用於proy UI介面的request避免CORS
 
-#### 2. 建立 HTTP Endpoint 來操作 Tx
-   - 啟動HTTP Endpoint
-   ```
-   tbb run --datadir=.tbb
-   ```
 
-#### 3. 上到雲端
-   - {Pending}
+## 🏗️ DEMO架構
 
----
 
-## Chapter 9: [It Takes Two Nodes ToTango]
+```
+┌─────────┐    ┌─────────┐    ┌─────────┐
+│ node 0  │◄──►│ node 1  │◄──►│ node 2  │
+│port 8080│    │port 8081│    │port 8082│
+└─────────┘    └─────────┘    └─────────┘
+     ▲              ▲              ▲
+     └──────────────┼──────────────┘
+                    │
+              ┌─────────┐
+              │ Nginx   │
+              │ port 80 │
+              └─────────┘
+                    │
+              ┌─────────┐
+              │ Web介面 │
+              └─────────┘
+```
 
-### 🎯 學習目標
+## 🚀 DEMO啟動步驟
 
-#### 1. Why is the Bootstrap Node necessary?
+### 環境需求
+- Go 1.24+
+- Docker & Docker Compose
 
----
+### 啟動步驟
+```bash
+#啟動
+docker-compose up -d --build
 
-## Chapter 10: [Programming a Peer-to-Peer DB Sync Algorithm]
+# Web UI
+open http://localhost
+```
 
-### 🎯 學習目標
 
-#### 1. State 加入 lastBlock，用於取得上一個區塊的高度(number)
-   - 指定路徑初始化 DB
-   ```
-   cat /dev/null > .tbb/database/block.db
-   ```
+## 🎯 實際展示
 
-   - 用 migrate 初始化 Hardcode 的資料
-   ```
-   tbb migrate --datadir=.tbb
-   ```
+### 1. Web UI介面
+- 確認節點正常啟動顯示 Online
 
-#### 2. 加入回傳 Status 的 Endpoint（用於下一步同步 Node 資訊）
-   - 修改 Node 結構，啟動時直接建立已知的啟動節點（bootstrap node）
+![介面](https://github.com/Alan-Cheng/go-blockchain/blob/demo/img/init_state.png?raw=true)
 
-#### 3. 同步演算法初步實作，先以簡單的定期更新方法實現
-   - sync() 使用 time.NewTicker 建立計時器
-   - 透過 ticker 定時發出訊號(Channel)，當接收到 ctx.done() 時中止 ticker
-   - 使用 go sync() 執行 goroutine ，當 HTTP Endpoint 啟動時在背景執行同步任務
-   - 使用CH9. 建立 /node/status Endpoint，透過 fetchNewBlocksAndPeers() 取得各節點的資訊以更新 n.knownPeers
-   - Node.knownPeers 使用 Map 替代　Array
+### 2. 發起交易與節點同步
+   - 由node0轉帳77元給node1
+   - 交易傳播至node1，同步開始挖礦
+   - node1率先產出區塊，node0同步該區塊
+   - 交易完成，餘額變更
 
-#### 4. 建立 /node/sync Endpoint 接收其他節點的區塊高度查詢請求
-   - 建立 /node/sync?fromBlock={Hash} Endpoint，透過 GetBlockAfter(Hahs, string)([]Block, error) 取得最新的 Block
+![交易](https://github.com/Alan-Cheng/go-blockchain/blob/demo/img/UI.png?raw=true)
 
-#### 5. 同步業務邏輯下一步：將其他節點取得的最新 Block 持久化到本地資料庫中
-   - 將原本的 AddTx(新增交易到State), Persist(儲存Stat到本地block.db)封裝到具有驗證流程的AddBlock()
-   - sync() 呼叫 doSync()，doSync() -> AddBlocks() -> AddBlock() 。 一開始只會跟Bootstrap Peer同步，sync()不斷觸發doSync()擴散至找到所有節點。
-   - ##### 建立三個節點的同步實驗：
-      1. 資料夾.tbb1, .tbb2, .tbb3 代表三個節點的本地持久化資料
-
-      2. 安裝 tbb CLI Tools
-         ```bash
-         go install ./cmd/...
-         ```
-      
-      3. 分別以下列指令，在不同的三個 Port 啟動三個節點
-         ```bash
-         tbb run --datadir=.tbb0 --port=8080
-         tbb run --datadir=.tbb1 --port=8081
-         tbb run --datadir=.tbb2 --port=8082
-         ```
-
-      4. 2號節點終端機輸出如下，代表有找到其他節點
-         ```text
-         Launching TBB node and its HTTP API...
-         Listening on: 127.0.0.1:8080
-         Peer '127.0.0.1:8081' was added into KnownPeers
-         Peer '127.0.0.1:8082' was added into KnownPeers
-         ```
-
-      5. 觀察各.tbb資料夾內的block.db檔案，應同步為相同內容(範例)
-         ```json
-         {"hash":"2705f942c57e9f54cd096162bee43d5e4bbd5555435bf081e5fff26ede9bbff1","block":{"header":{"parent":"46438b2675171b3e40b013218805de961e8d40af7af252fe166b5eb22089d027","number":1,"time":1755093150},"payload":[{"from":"andrej","to":"andrej","value":3,"data":""},{"from":"andrej","to":"andrej","value":700,"data":"reward"}]}}
-         {"hash":"bdfef9839fbac54168fac5dedbf1397aead1c6c2be6be4b137a397f0c95eb4b1","block":{"header":{"parent":"2705f942c57e9f54cd096162bee43d5e4bbd5555435bf081e5fff26ede9bbff1","number":2,"time":1755093150},"payload":[{"from":"andrej","to":"babayaga","value":2000,"data":""},{"from":"andrej","to":"andrej","value":100,"data":"reward"},{"from":"babayaga","to":"andrej","value":1,"data":""},{"from":"babayaga","to":"caesar","value":1000,"data":""},{"from":"babayaga","to":"andrej","value":50,"data":""},{"from":"andrej","to":"andrej","value":600,"data":"reward"}]}}
-         {"hash":"24fc3c6bd9243b6c50958d9b202985fc15a19e606084afc6afc56548d6a350f7","block":{"header":{"parent":"bdfef9839fbac54168fac5dedbf1397aead1c6c2be6be4b137a397f0c95eb4b1","number":3,"time":1755093150},"payload":[{"from":"andrej","to":"andrej","value":24700,"data":"reward"}]}}
-         {"hash":"7b86318b11f6120c7e359147b9b3c4825059e1ebebc4b983a146ff704b41c463","block":{"header":{"parent":"24fc3c6bd9243b6c50958d9b202985fc15a19e606084afc6afc56548d6a350f7","number":4,"time":1755178610},"payload":[{"from":"andrej","to":"babayaga","value":100,"data":""}]}}
-         {"hash":"dfad99f639a95d1a741c2bcba909c68476e2544f40a4d521e97d2ec9c7f0b9e7","block":{"header":{"parent":"7b86318b11f6120c7e359147b9b3c4825059e1ebebc4b983a146ff704b41c463","number":5,"time":1755223632},"payload":[{"from":"andrej","to":"babayaga","value":100,"data":""}]}}
-         ```
-
-      6. 透過新增交易的 Endpoint 在0號節點新增一比交易紀錄，45秒後觀察是否自動同步到其餘節點
-         ```bash
-         curl --request GET "http://localhost:8080/tx/add" --header "Content-Type: application/json" --data-raw "{\"from\":\"andrej\",\"to\":\"babayaga\",\"value\":100}"
-         ```
-
-      7. 終端機輸出
-         ```text
-         Found 1 new blocks from Peer 127.0.0.1:8080
-         Importing blocks from Peer 127.0.0.1:8080...
-         Persisting new Block to disk:
-         {"hash":"dfad99f639a95d1a741c2bcba909c68476e2544f40a4d521e97d2ec9c7f0b9e7","block":{"header":{"parent":"7b86318b11f6120c7e359147b9b3c4825059e1ebebc4b983a146ff704b41c463","number":5,"time":1755223632},"payload":[{"from":"andrej","to":"babayaga","value":100,"data":""}]}}
-         ```
-
-## Chapter 11: [The Autonomous Database Brain]
-
-### 🎯 學習目標
-
-#### 1. 本機路徑中加入域名解析與分叉
-   - 在 /etc/hosts 加入測試用的 Node Domain
-   ```
-   sudo sh -c 'echo "127.0.0.1 andrej.tbb" >> /etc/hosts && echo "127.0.0.1 babayaga.tbb" >> /etc/hosts && killall -HUP mDNSResponder'
-   ```
-
-   - 目前Sync週期為45秒一次，若在週期內不同Node產生Tx，會發生Fork(分岔的狀況)，block.db會記錄下不同的Blocks
-   ```
-   # 15:00:00
-   curl -X POST http://andrej.tbb:8080/tx/add \
-   -d '{
-   "from": "andrej",
-   "to": "andrej",
-   "value": 7
-   }'
-   ```
-
-   ```
-   # 15:00:05
-   curl -X POST http://babayaga.tbb:8081/tx/add \
-   -d '{
-   "from": "andrej",
-   "to": "babayaga",
-   "value": 2
-   }'
-
-   # 15:00:10
-   curl -X POST http://babayaga.tbb:8081/tx/add \
-   -d '{
-   "from": "andrej",
-   "to": "babayaga",
-   "value": 3
-   }'
-   ```
-
-#### 2. 待解決同步問題 - 設計共識演算法（如PoW）
-   1. P2P同步規則
-   2. Tx與Block的有效性驗證方法
-   3. 有效節點驗證方法
-   4. 哪個節點有權利生成下一個Block
-
-#### 3. 比特幣的PoW
-   - 引入Nonce，要求sha256（Block Header + Block Payload + Nonce）值符合要求
-      - 要求為sha256開頭共有n個0，n越大計算難度越大
-
-   - 設計上述演算法，設定n=6並實作測試檔案(./node/miner_test.go)
+### 3. 容器內Log
+   - node1紀錄成功透過PoW(Proof-of-Work)工作量證明成功取得符合要求之Hash
+   - 將區塊儲存至本地，內容包含交易內容與 Block Header 等
    
-   - 啟動測試，實驗挖礦
-      ```
-      go test -timeout=0 ./node -test.v -test.run ^TestMine$
-      ```
+![容器](https://github.com/Alan-Cheng/go-blockchain/blob/demo/img/container_log.png?raw=true)
 
-      ```
-      ＃ 終端機下列輸出代表成功挖到
-      Mined new Block '000000459aa35c64fce85ccd2f277bb35d673cf33699cb687b83580e4b6e18d7' using PoW🎉🎉🎉🎉:
-         Height: '0'
-         Nonce: '2744821435'
-         Created: '1755359183'
-         Miner: 'andrej'
-         Parent: '0000000000000000000000000000000000000000000000000000000000000000'
 
-         Attempt: '1432275'
-         Time: 1.148893875s
-      ```
-   - 所有節點都可以驗證交易並挖掘下一個Block，且發現其他節點已挖出下個Block就要停止並開始新的工作
-      1. StatusRes中加入PendingTXs用來記錄節點待處理的交易
-      2. 修改mine()，n.newSyncBlocks channel中取出值，若有新的區塊產生就停止目前的挖礦工作
-      3. 再試一次啟動多節點並發起多交易
-      4. ##### 兩個節點測試可以同步，但同步頻率（秒數）仍然會造成分岔，因為其他節點還沒收到新區塊產出，他自己也產出了區塊
+## 🛠️ 開發
 
-   - 建立挖礦獎勵機制的四個步驟
-      1. 在 Block Header 裡面記錄 Miner
-      2. applyBlock()內新增獎勵成功挖礦的邏輯 s.Balances[b.Header.Miner] += BlockReward
-      3. CLI run 新增 flag --miner 來指定 Miner 名稱
-      4. n.minePendingTXs()在建立PendingBlock的時候要帶入Miner
+### 專案結構
+```
+├── cmd/          # CLI Tools
+├── node/         # P2P網路和共識機制
+├── wallet/       # 加密金鑰管理
+├── database/     # 持久化儲存
+├── ui/           # Web UI相關
+├── scripts/      # 自動化腳本
+├── nginx/        # Web UI相關
+├── data*/        # Demo用資料
+└── docker/       # 容器化
+```
 
-   - 撰寫完整測試
-      - ##### 跳過這章節
+## 🙏 參考來源
 
-## Chapter 12: [Madam/Sir Your Cryptographic Signature Please]
-
-### 🎯 學習目標
-
-#### 1. 導入非對稱加密來產生key，驗證使用者身分
-   - 用 go-ethereum 專案裡面的 mod 來建立產生公私鑰的方法與CLI工具
-
-   - 產出 Address (實際上是keystore檔案，裡面包含加密後的私鑰)
-
-   ```
-   # 利用自訂的密碼產生keystore檔案
-   tbb wallet new-account --datadir=./.crypto
-   ```
-
-   ```
-   # 讀取keystore (自行給keystore裡面的檔案路徑)
-   tbb wallet pk-print --keystore=./.crypto/keystore/UTC--2025-08-20T13-41-56.241378000Z--ba2081ce95105590501940242e4c4f576abc4c82
-   ```
-
-   - 建立 Publickey, PrivateKey, ecdsaSignature 等結構，且將先前章節使用的 Account 轉為使用 common.Address
-
----
+- "Build a Blockchain from Scratch in Go" eBook, Repo：[The Blockchain Bar](https://github.com/web3coach/the-blockchain-bar)
